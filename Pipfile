@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask-cors = "*"
+jinja2 = "*"
+python-dotenv = "*"
+config = "*"
+pydantic = "*"
+flask-jwt-extended = "*"
+bcrypt = "*"
+flask = {extras = ["async"], version = "*"}
+boto3 = "*"
+requests = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

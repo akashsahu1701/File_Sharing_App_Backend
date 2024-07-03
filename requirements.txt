@@ -1,0 +1,10 @@
+python-dotenv
+Config
+pydantic
+Flask[async]
+pymongo[srv]
+flask-jwt-extended
+flask-cors
+bcrypt
+boto3
+requests
