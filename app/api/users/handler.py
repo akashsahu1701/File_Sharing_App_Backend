@@ -10,7 +10,7 @@ user_repo = UserRepository(db)
 user_service = UserService(user_repo)
 
 
-@users_api.route("/<username>", methods=["GET"])
+@users_api.get("/<username>")
 def get_user(username: str):
     try:
         user = user_service.get_user(username)
@@ -45,7 +45,7 @@ def get_user(username: str):
         )
 
 
-@users_api.route("/", methods=["POST"])
+@users_api.post("/")
 def create_user():
     data = request.json
     data = UserSchema(**data)
@@ -66,7 +66,7 @@ def create_user():
         )
 
 
-@users_api.route("/<username>", methods=["PUT"])
+@users_api.put("/<username>")
 def update_user(username):
     data = request.json
     try:
@@ -96,7 +96,7 @@ def update_user(username):
         )
 
 
-@users_api.route("/<username>", methods=["DELETE"])
+@users_api.delete("/<username>")
 def delete_user(username):
     try:
         user = user_service.delete_user(username)
