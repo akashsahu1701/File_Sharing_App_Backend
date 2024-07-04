@@ -6,12 +6,14 @@ from werkzeug.utils import secure_filename
 
 from app.api.files.repository import FileRepository
 from app.api.files.services import FileService
+from app.api.users.repository import UserRepository
 from app.responses.response import send_response
 
 
 files_api = Blueprint("files_api", "files_api", url_prefix="/api/files")
 file_repo = FileRepository(db)
-file_service = FileService(file_repo)
+user_repo = UserRepository(db)
+file_service = FileService(file_repo, user_repo)
 
 
 @files_api.get("/me")
@@ -58,13 +60,23 @@ def create_file():
                 400,
             )
 
-        # TODO: Add file size validation
         created_by = get_jwt_identity()
         file = request.files["file"]
         filename = secure_filename(file.filename)
         file_data = file.read()
         file_type = file.content_type
         file_size = len(file_data)
+
+        if not file_service.isValidFile(user_id=created_by, file_size=len(file_data)):
+            return (
+                send_response(
+                    data={},
+                    message="Bad request",
+                    status_code=400,
+                    error="File too large",
+                ),
+                400,
+            )
 
         file_service.create_file(
             filename=filename,

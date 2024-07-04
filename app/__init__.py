@@ -35,12 +35,19 @@ def create_app():
 
     registered_routes(app=app)
 
-    from app.api.users.models import User, Role, Permission, UserRole, RolePermission
+    # from app.api.users.models import (
+    #     User,
+    #     Role,
+    #     Permission,
+    #     UserRole,
+    #     RolePermission,
+    #     Settings,
+    # )
 
-    from app.api.files.models import File, FilePermission
+    # from app.api.files.models import File, FilePermission
 
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
 
     # Configure logging
     handler = logging.StreamHandler()

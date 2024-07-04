@@ -13,6 +13,20 @@ class User(db.Model):
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
     roles = db.relationship("Role", secondary="user_roles", backref="users")
+    settings = db.relationship("Settings", backref="user", uselist=False)
+
+
+class Settings(db.Model):
+    __tablename__ = "settings"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    total_size_limits = db.Column(db.Integer, nullable=False)
+    file_size_limit = db.Column(db.Integer, nullable=False)
+    manage_users = db.Column(db.JSON, nullable=False, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
 
 
 class Role(db.Model):
