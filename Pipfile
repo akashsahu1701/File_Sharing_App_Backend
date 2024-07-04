@@ -11,9 +11,11 @@ config = "*"
 pydantic = "*"
 flask-jwt-extended = "*"
 bcrypt = "*"
-flask = {extras = ["async"], version = "*"}
 boto3 = "*"
 requests = "*"
+flask-sqlalchemy = "*"
+mysqlclient = "*"
+flask = {extras = ["async"], version = "*"}
 
 [dev-packages]
 

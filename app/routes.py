@@ -5,7 +5,6 @@ def registered_routes(app):
 
 
 def get_all_routes():
-    from app.api.users.routes import users_api
-    from app.api.auth.routes import auth_api
+    from app.api.users.handler import users_api
 
-    return [users_api, auth_api]
+    return [users_api]

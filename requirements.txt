@@ -2,8 +2,9 @@ python-dotenv
 Config
 pydantic
 Flask[async]
-pymongo[srv]
+mysqlclient
 flask-jwt-extended
+flask_sqlalchemy
 flask-cors
 bcrypt
 boto3
