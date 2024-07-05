@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from app.api.users.models import Settings, User, UserRole
+from app.api.users.models import Permission, Settings, User, UserRole
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 
 class UserRepository:
@@ -36,23 +37,67 @@ class UserRepository:
 
         return self._serialize_user(user)
 
+    def get_users(self, user_id: int, permissions: list[int]):
+        permission = (
+            self.db.session.query(Permission)
+            .filter(Permission.id.in_(permissions))
+            .first()
+        )
+
+        query = (
+            self.db.session.query(User)
+            .options(joinedload(User.settings))
+            .options(joinedload(User.roles))
+        )
+        users = []
+
+        if permission.name == "manage_all_accounts":
+            users = query.all()
+        elif permission.name == "manage_set_of_accounts":
+            settings = (
+                self.db.session.query(Settings).filter_by(user_id=user_id).first()
+            )
+            manage_users = settings.manage_users
+            users = query.filter(User.id.in_(manage_users)).all()
+
+            print(users)
+        result = []
+        for user in users:
+            user = {
+                **self._serialize_user(user),
+                **self._serialize_settings(user.settings),
+                "role": user.roles[0].name,
+            }
+            result.append(user)
+
+        return result
+
     def get_user_settings(self, user_id: int):
         settings = self.db.session.query(Settings).filter_by(user_id=user_id).first()
         settings = self._serialize_settings(settings)
         return settings
 
     def update_settings(
-        self, user_id: int, total_size: int, file_size: int, manage_users: list
+        self, user_id: int, total_size: int, file_size: int, manage_users: list | None
     ):
         print(user_id, total_size, file_size, manage_users)
         try:
-            self.db.session.query(Settings).filter_by(user_id=user_id).update(
-                {
-                    "total_size_limits": total_size,
-                    "file_size_limit": file_size,
-                    "manage_users": manage_users,
-                }
-            )
+            query = self.db.session.query(Settings).filter_by(user_id=user_id)
+            if manage_users:
+                query.update(
+                    {
+                        "total_size_limits": total_size,
+                        "file_size_limit": file_size,
+                        "manage_users": manage_users,
+                    }
+                )
+            else:
+                query.update(
+                    {
+                        "total_size_limits": total_size,
+                        "file_size_limit": file_size,
+                    }
+                )
             self.db.session.commit()
             return True
         except SQLAlchemyError as e:
@@ -66,6 +111,8 @@ class UserRepository:
         self.db.session.add(new_user)
         try:
             self.db.session.commit()
+            if role_id == 2:
+                user_ids.append(new_user.id)
             user_setting = Settings(
                 user_id=new_user.id,
                 total_size_limits=0,

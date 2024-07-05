@@ -32,8 +32,16 @@ class FileService:
             filename, file_type, file_data, file_size, created_by
         )
 
+    def get_users_access_to_file(self, file_id: int):
+        return self.file_repo.get_users_access_to_file(file_id)
+
+    def give_access_to_user(
+        self, file_id: int, user_id: int, can_view: bool | None, can_edit: bool | None
+    ):
+        return self.file_repo.give_access_to_user(file_id, user_id, can_view, can_edit)
+
     def delete_file(self, file_id: int):
-        return self.file_repo.get_file(file_id)
+        return self.file_repo.delete_file(file_id)
 
     def update_file(self, file_id: int, **kwargs):
         return self.file_repo.get_file(file_id)

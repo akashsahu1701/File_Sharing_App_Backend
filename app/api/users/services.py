@@ -11,6 +11,9 @@ class UserService:
     def get_user(self, username: str):
         return self.repository.get_user(username)
 
+    def get_users(self, user_id: int, permissions: list[int]):
+        return self.repository.get_users(user_id=user_id, permissions=permissions)
+
     def create_user(
         self,
         username: str,
@@ -31,7 +34,7 @@ class UserService:
         return self.repository.get_user_settings(user_id)
 
     def update_user_settings(
-        self, user_id: int, total_size: int, file_size: int, manage_users: list
+        self, user_id: int, total_size: int, file_size: int, manage_users: list | None
     ):
         return self.repository.update_settings(
             user_id, total_size, file_size, manage_users

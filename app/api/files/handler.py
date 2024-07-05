@@ -25,9 +25,10 @@ def get_my_files():
 
 
 @files_api.get("/<file_id>")
-@jwt_required()
+# @jwt_required()
 def get_files(file_id: str):
-    user_id = get_jwt_identity()
+    # user_id = get_jwt_identity()
+    user_id = 0
     file = file_service.get_file(file_id=int(file_id), user_id=int(user_id))
     if not file:
         return (
@@ -46,6 +47,53 @@ def get_files(file_id: str):
         download_name=file.name,
         as_attachment=False,
     )
+
+
+@files_api.get("/<file_id>/users")
+@jwt_required()
+def get_users_access_to_file(file_id: str):
+    try:
+        users = file_service.get_users_access_to_file(file_id=int(file_id))
+        return (
+            send_response(
+                data=users, message="Users retrieved successfully", status_code=200
+            ),
+            200,
+        )
+    except Exception as e:
+        return (
+            send_response(
+                data={},
+                message="Something went wrong",
+                status_code=400,
+                error=str(e),
+            ),
+            400,
+        )
+
+
+@files_api.put("/<file_id>/<user_id>")
+@jwt_required()
+def give_access_to_user(file_id: str, user_id: str):
+    try:
+        user_id = int(user_id)
+        file_id = int(file_id)
+        can_view = request.json.get("can_view")
+        can_edit = request.json.get("can_edit")
+        file_service.give_access_to_user(
+            file_id=file_id, user_id=user_id, can_view=can_view, can_edit=can_edit
+        )
+        return send_response(data={}, message="Access given", status_code=200), 200
+    except Exception as e:
+        return (
+            send_response(
+                data={},
+                message="Something went wrong",
+                status_code=400,
+                error=str(e),
+            ),
+            400,
+        )
 
 
 @files_api.post("/")
@@ -87,6 +135,36 @@ def create_file():
         )
         return send_response(data={}, message="File created", status_code=201), 201
 
+    except Exception as e:
+        return (
+            send_response(
+                data={}, message="Bad request", status_code=400, error=str(e)
+            ),
+            400,
+        )
+
+
+@files_api.delete("/<file_id>")
+@jwt_required()
+def delete_file(file_id: str):
+    try:
+        deleted = file_service.delete_file(file_id=int(file_id))
+        if not deleted:
+            return (
+                send_response(
+                    data={},
+                    message="You do not have permission to delete this resource",
+                    status_code=403,
+                    error="Forbidden",
+                ),
+                403,
+            )
+        return (
+            send_response(
+                data={}, message="File deleted successfully", status_code=200
+            ),
+            200,
+        )
     except Exception as e:
         return (
             send_response(

@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -13,4 +14,4 @@ class UpdateUserSettingsSchema(BaseModel):
     user_id: int
     total_size_limits: int
     file_size_limit: int
-    manage_users: list
+    manage_users: Optional[list] = None

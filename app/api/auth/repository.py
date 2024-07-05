@@ -12,12 +12,14 @@ class AuthRepository:
         self.db = db
 
     def _serialize_user(self, user):
+        roles = [role.name for role in user.roles]
         return {
             "username": user.username,
             "email": user.email,
             "id": user.id,
             "created_at": user.created_at,
             "updated_at": user.updated_at,
+            "roles": roles[0],
         }
 
     def generate_access_token(self, user_id: str, data) -> str:
