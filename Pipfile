@@ -16,8 +16,6 @@ requests = "*"
 flask-sqlalchemy = "*"
 mysqlclient = "*"
 flask = {extras = ["async"], version = "*"}
-moviepy = "*"
-ffmpeg = "*"
 
 [dev-packages]
 

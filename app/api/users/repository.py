@@ -130,7 +130,12 @@ class UserRepository:
             return self._serialize_user(new_user)
         except SQLAlchemyError as e:
             self.db.session.rollback()
-            raise e
+            if "username" in str(e.orig):
+                raise ValueError("Username already exists")
+            elif "email" in str(e.orig):
+                raise ValueError("Email already exists")
+            else:
+                raise e
 
     def update_user(self, username: str, **kwargs):
         user = self.get_user(username)

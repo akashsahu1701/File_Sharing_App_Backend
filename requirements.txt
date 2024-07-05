@@ -9,5 +9,3 @@ flask-cors
 bcrypt
 boto3
 requests
-moviepy
-ffmpeg
