@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import and_
 
-# from moviepy.editor import VideoFileClip
 from app.api.files.models import File, FilePermission
 from app.api.users.models import User
 
@@ -57,12 +56,6 @@ class FileRepository:
         files = [self._serialize_file(file) for file in files]
 
         return files
-
-    # def trim_video(self, file_id, start_time, end_time):
-    #     file = self.db.session.query(File).filter(File.id == file_id).first()
-    #     clip = VideoFileClip(file.data)
-    #     trimmed_clip = clip.subclip(start_time, end_time)
-    #     return trimmed_clip
 
     def create_file(
         self,
