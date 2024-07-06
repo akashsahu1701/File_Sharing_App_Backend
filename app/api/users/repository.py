@@ -115,8 +115,8 @@ class UserRepository:
                 user_ids.append(new_user.id)
             user_setting = Settings(
                 user_id=new_user.id,
-                total_size_limits=0,
-                file_size_limit=0,
+                total_size_limits=100,
+                file_size_limit=100,
                 manage_users=user_ids,
             )
             user_role = UserRole(user_id=new_user.id, role_id=role_id)
